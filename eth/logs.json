@@ -1,0 +1,28 @@
+{
+    "name": "MessageSent",
+    "data": [
+        {
+            "name": "direction",
+            "type": "bool",
+            "value": true,
+            "decoded": true
+        },
+        {
+            "name": "content",
+            "type": "string",
+            "value": "crosschain-sendid:ethereum;recvid:chainmaker;sendcon:0xecf835c55e4d77348dd6bb46a3c18d71fd1e3af8;recvcon:0x0000000000000000000000000000000000000000;message:aaaaaa",
+            "decoded": true
+        },
+        {
+            "name": "sender",
+            "type": "address",
+            "value": "0xecf835c55e4d77348dd6bb46a3c18d71fd1e3af8",
+            "decoded": true
+        }
+    ],
+    "decoded": true,
+    "address": "0xA8df466aA54fff29Db5338BfE0AA766Ba79B622c",
+    "logIndex": 0,
+    "blockNumber": 69,
+    "transactionIndex": 0
+}
