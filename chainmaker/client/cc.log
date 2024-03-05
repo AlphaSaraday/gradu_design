@@ -1,0 +1,20 @@
+[cc_client] 2024/03/03 21:43:54 log begin.
+[cc_client] 2024/03/03 21:43:54 create contract txid: 17b945080f817279ca931521d8bc4e60bef060f9e3e54f59b74bbbc597e3058f
+[cc_client] 2024/03/03 21:43:56 subscribe create contract 17b945080f817279ca931521d8bc4e60bef060f9e3e54f59b74bbbc597e3058f message: 
+contract_result:<result:"\n\017contract_bridge\022\0051.0.0\030\010*\253\001\n\026wx-org1.chainmaker.org\020\001\032 \205\020\310\274\305\220\205\026\022\203d\257?\005\374\206\263g\272\212\364\216\".\226D\361&\215@b\017\"#client1.sign.wx-org1.chainmaker.org*\006CLIENT2@1cd014ec79332981a4561d5aeffc4074d26cdceec1f47044fab574f8c97877a92(d2ad2c10444e6eebbe9a4af3d74bace9502f37b5" message:"Success" gas_used:13059 > rw_set_hash:"{\233\366\030W\243\005F!\314i\237\211\226\214@\332\2051s\334%\024H\364[&LJ\007\204X" 
+[cc_client] 2024/03/03 21:43:58 contract contract_bridge status: 
+name:"contract_bridge" version:"1.0.0" runtime_type:DOCKER_GO creator:<org_id:"wx-org1.chainmaker.org" member_type:CERT_HASH member_info:"\205\020\310\274\305\220\205\026\022\203d\257?\005\374\206\263g\272\212\364\216\".\226D\361&\215@b\017" member_id:"client1.sign.wx-org1.chainmaker.org" role:"CLIENT" uid:"1cd014ec79332981a4561d5aeffc4074d26cdceec1f47044fab574f8c97877a9" > address:"d2ad2c10444e6eebbe9a4af3d74bace9502f37b5"
+
+[cc_client] 2024/03/04 11:11:24 log begin.
+[cc_client] 2024/03/04 11:11:25 invoke contract success: 
+contract_result:<result:"func chainToBridge success" message:"Success" gas_used:134 contract_event:<topic:"CrossChain" tx_id:"17b97118c39035b2cabe854541e0843858ab61ac75dc4d3c9fa7916ecc80b850" contract_name:"contract_bridge" event_data:"chainmaker" event_data:"test-contract" event_data:"ethereum" event_data:"0xA8df466aA54fff29Db5338BfE0AA766Ba79B622c" event_data:"hello i am lzl" > > tx_id:"17b97118c39035b2cabe854541e0843858ab61ac75dc4d3c9fa7916ecc80b850" tx_timestamp:1709521884 tx_block_height:6 
+[cc_client] 2024/03/04 11:11:25 subscribe contract event message: 
+block height: 6
+chainid: chain1
+topic: CrossChain
+txid: 17b97118c39035b2cabe854541e0843858ab61ac75dc4d3c9fa7916ecc80b850
+eventindex: 0
+contract name: contract_bridge
+contract version: 
+eventdata: [chainmaker test-contract ethereum 0xA8df466aA54fff29Db5338BfE0AA766Ba79B622c hello i am lzl]
+indexcount: 0

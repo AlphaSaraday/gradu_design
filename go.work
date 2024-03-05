@@ -4,4 +4,5 @@ use (
 	./chainmaker/client
 	./chainmaker/contract_bridge
 	./chainmaker/contract_bussiness
+	./chainmaker/test
 )
