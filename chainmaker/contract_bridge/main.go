@@ -1,3 +1,4 @@
+// 跨链合约模块
 package main
 
 import (

@@ -1,0 +1,13 @@
+[2024-03-11 16:56:49,500] root:INFO: ------------------
+[2024-03-11 16:56:49,507] waitress:INFO: Serving on http://127.0.0.1:6001
+[2024-03-11 16:56:49,550] root:INFO: 
+[2024-03-11 16:56:49,551] root:ERROR: Generating RSA private key, 2048 bit long modulus (2 primes)
+............................................+++++
+......................................+++++
+e is 65537 (0x010001)
+
+[2024-03-11 16:56:49,560] root:INFO: 
+[2024-03-11 16:56:49,561] root:ERROR: 
+[2024-03-11 16:56:51,571] urllib3.connectionpool:DEBUG: Starting new HTTP connection (1): 127.0.0.1:5001
+[2024-03-11 16:56:51,632] urllib3.connectionpool:DEBUG: http://127.0.0.1:5001 "POST /sign_cert HTTP/1.1" 200 4536
+[2024-03-11 16:56:51,635] root:INFO: succeed to create privkey, csr, cert
