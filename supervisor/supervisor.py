@@ -1,4 +1,5 @@
 # 监管模块
+import json
 import logging
 import os
 import re
@@ -29,7 +30,7 @@ def generate_root_cert():
         logger.info("CA's privkey, csr, cert exist")
     else:
         try:
-            subprocess.run("mkdir demoCA ./demoCA/certs ./demoCA/crl ./demoCA/newcerts ./demoCA/private ./demoCA/csr", shell=True)
+            subprocess.run("mkdir demoCA ./demoCA/certs ./demoCA/crl ./demoCA/newcerts ./demoCA/private ./demoCA/csr ./demoCA/chainInfo", shell=True)
             subprocess.run("touch ./demoCA/index.txt; echo '01' > ./demoCA/serial", shell=True)
             result = subprocess.run("openssl genrsa -out ./demoCA/private/cakey.pem", shell=True, capture_output=True, text=True)
             logger.info(result.stdout)
@@ -42,13 +43,25 @@ def generate_root_cert():
         except:
             logger.error(traceback.format_exc())
 
+
+def sign_cert(csr_path):
+    result = subprocess.run("openssl ca -in " + csr_path + " -config openssl.cnf -batch", shell=True, capture_output=True, text=True)
+    logger.info(result.stdout)
+    logger.error(result.stderr)
+    with open("./demoCA/serial.old", "r") as f:
+        serial = f.read()
+        serial = serial.rstrip("\n")
+    crt_path = "./demoCA/newcerts/" + serial + ".pem"
+    return crt_path
+
+
 @app.route('/test', methods=['GET'])
 def test():
     return send_file("./supervisor.log")
 
-# 签发证书
-@app.route('/sign_cert', methods=['POST'])
-def sign_cert():
+
+@app.route('/sign_relayer_cert', methods=['POST'])
+def sign_relayer_cert():
     csr_file = request.files["csr"]
     csr_path = os.path.join("./demoCA/csr/", csr_file.filename)
     csr_file.save(csr_path)
@@ -63,18 +76,30 @@ def sign_cert():
     if verify_info_dict != real_info_dict:
         return "fail to verify the basic info", 400
     # 签署证书并传回
-    result = subprocess.run("openssl ca -in " + csr_path + " -config openssl.cnf -batch", shell=True, capture_output=True, text=True)
-    logger.info(result.stdout)
-    logger.error(result.stderr)
-    with open("./demoCA/serial.old", "r") as f:
-        serial = f.read()
-        serial = serial.rstrip("\n")
-    crt_path = "./demoCA/newcerts/" + serial + ".pem"
+    crt_path = sign_cert(csr_path)
     return send_file(crt_path)
+
+
+@app.route('/sign_chain_cert', methods=['POST'])
+def sign_chain_cert():
+    # 暂存csr, 保存链配置信息
+    csr_file = request.files["csr"]
+    csr_path = os.path.join("./demoCA/csr/", csr_file.filename)
+    csr_file.save(csr_path)
+    data = json.loads(request.form["json"])
+    chain_info = json.loads(data["chainInfo"])
+    with open("./demoCA/chainInfo/"+ chain_info["domainName"] + ".json", "w") as f:
+        json.dump(chain_info, f)
+    # 签署证书并传回
+    crt_path = sign_cert(csr_path)
+    subprocess.run("rm -f " + csr_path, shell=True)
+    return send_file(crt_path)
+
 
 def stop_supervisor(sig, frame):
     print("[supervisor] STOP.")
     exit()
+
 
 if __name__ == '__main__':
     logger.info("------------------")

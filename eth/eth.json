@@ -1,11 +1,8 @@
 {
-    "domainName": "ethereum-01",
-    "coinbase": "0x0000000000000000000000000000000000000000",
-    "difficulty": "0x400",
-    "gasLimit": "0x2fefd8",
-    "nonce": "0x0000000000000042",
-    "mixhash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "parentHash": "0x0000000000000000000000000000000000000000000000000000000000000000",
-    "privateKey": "0x6322353...39de23b637",
-    "url": "http://localhost:8545"
+    "domainName": "ganache01",
+    "gasLimit": 6721975,
+    "gasPrice": 20000000000,
+    "url": "http://127.0.0.1:7545",
+    "network_id": 5777,
+    "flavor": "ethereum"
 }

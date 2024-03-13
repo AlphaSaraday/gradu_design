@@ -1,13 +1,19 @@
-[2024-03-11 16:56:49,500] root:INFO: ------------------
-[2024-03-11 16:56:49,507] waitress:INFO: Serving on http://127.0.0.1:6001
-[2024-03-11 16:56:49,550] root:INFO: 
-[2024-03-11 16:56:49,551] root:ERROR: Generating RSA private key, 2048 bit long modulus (2 primes)
-............................................+++++
-......................................+++++
+[2024-03-12 23:33:47,828] root:INFO: ------------------
+[2024-03-12 23:33:47,837] waitress:INFO: Serving on http://127.0.0.1:6001
+[2024-03-12 23:33:47,873] root:INFO: 
+[2024-03-12 23:33:47,874] root:ERROR: Generating RSA private key, 2048 bit long modulus (2 primes)
+..........................+++++
+.........................................+++++
 e is 65537 (0x010001)
 
-[2024-03-11 16:56:49,560] root:INFO: 
-[2024-03-11 16:56:49,561] root:ERROR: 
-[2024-03-11 16:56:51,571] urllib3.connectionpool:DEBUG: Starting new HTTP connection (1): 127.0.0.1:5001
-[2024-03-11 16:56:51,632] urllib3.connectionpool:DEBUG: http://127.0.0.1:5001 "POST /sign_cert HTTP/1.1" 200 4536
-[2024-03-11 16:56:51,635] root:INFO: succeed to create privkey, csr, cert
+[2024-03-12 23:33:47,882] root:INFO: 
+[2024-03-12 23:33:47,882] root:ERROR: 
+[2024-03-12 23:33:49,889] urllib3.connectionpool:DEBUG: Starting new HTTP connection (1): 127.0.0.1:5001
+[2024-03-12 23:33:49,936] urllib3.connectionpool:DEBUG: http://127.0.0.1:5001 "POST /sign_relayer_cert HTTP/1.1" 200 4536
+[2024-03-12 23:33:49,939] root:INFO: succeed to create privkey, csr, cert
+[2024-03-12 23:33:53,487] urllib3.connectionpool:DEBUG: Starting new HTTP connection (1): 127.0.0.1:5001
+[2024-03-12 23:33:53,511] urllib3.connectionpool:DEBUG: http://127.0.0.1:5001 "POST /sign_chain_cert HTTP/1.1" 200 4642
+[2024-03-12 23:33:53,516] root:INFO: succeed to register chain [ganache01]
+[2024-03-12 23:34:19,144] root:INFO: ------------------
+[2024-03-12 23:34:19,145] root:INFO: privkey, csr, cert exist
+[2024-03-12 23:34:19,147] waitress:INFO: Serving on http://127.0.0.1:6001

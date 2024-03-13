@@ -24,3 +24,9 @@ from threading import Thread
 # print(text)
 # match = re.findall(r'/OU=(\w+)/CN=', text)
 # print(match)
+domain_list = []
+with open("index.txt", "r") as f:
+    for line in f:
+        parts = line.strip().split(",")
+        domain_list.append(parts[1])
+print(domain_list)

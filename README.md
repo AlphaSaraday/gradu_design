@@ -1,5 +1,3 @@
-### 目录
-
 [TOC]
 
 **长安链/chainmaker：cc 				以太坊/ethereum：eth**
@@ -22,38 +20,42 @@ rsync -av --delete /mnt/hgfs/share1/gradu_design_bak/ gradu_design/ *[反向]*
 
 ![image-20240306110712685](./README.assets/image-20240306110712685.png)
 
-#### 建议
+- [ ] ##### 系统图建议（之后重画）
+
 
 1. 桥接模块和链的关系，中继模块是否唯一（各个模块的归属）
+
 2. 监管：多维度的接口，各个模块都能体现
+
 3. 分层设计
+
 4. 每个模块功能总结后再详解
 
-1. **监管模块**
+5. **监管模块**
 
    1. 为进行跨链的区块链分配域名、颁发证书；存储跨链系统所需的证书、域名路由等信息。
    2. 监管模块需具备下发和接收监管指令的能力，并有较高的管理权限，例如下发中继模块撤销某条接入区块链的跨链权限、对各接入区块链、链上用户进行访问控制授权和撤回。
    3. 管理跨链事件，将桥接模块/中继模块推送过来的跨链消息组织落盘存储，用于实现对跨链消息的监管和追溯。
 
-2. **跨链合约模块**
+6. **跨链合约模块**<a name="anchor"></a> 
 
    1. 包含系统合约，给应用合约提供跨链接口。
    2. 执行发送方交易请求时，需验证交易发起者是否有权限发送跨链请求，验证通过后应用合约才能跨合约调用跨链合约，并最终抛出跨链响应事件。
    3. 执行接收方交易请求时，需接收桥接模块发送的跨链消息，并在跨链合约跨合约调用相应的目标应用合约完成跨链请求。
 
-3. **桥接模块**
+7. **桥接模块**
 
    连接跨链系统链下中继模块和各区块链的关键模块，用于接收监管模块的监管指令。
 
    1. 执行发送方交易请求时，需监听链上抛出的跨链事件。根据规范重构跨链消息（例如包含源链的数字证书签名、目标链域名、跨链消息等），并转发至中继模块。
    2. 执行接收方交易请求时，接收中继模块转发的跨链消息，解构跨链消息后发送到目标链上的跨链合约。
 
-4. **中继模块**
+8. **中继模块**
 
    1. 同步监管模块的证书信息，提供给其他各模块访问。
    2. 接收桥接模块转发的跨链消息后，转发到公证人模块验证交易的真实性，在收到跨链消息和公证人的验证证明后，解析消息中的接收链域名，发送给正确的接收链（若没有存储该路由信息则询问监管模块并存储）。
 
-5. **公证人模块**
+9. **公证人模块**
 
    1. 验证交易源链证书的真实性（向中继模块请求验证时的必要信息），验证跨链消息的真实性，只有一定比例的公证人分别对消息和证书进行背书，该跨链交易才能被跨链系统承认并执行转发等后续流程。验证完成的跨链消息和背书证明将被发送回桥接模块。
 
@@ -72,34 +74,59 @@ rsync -av --delete /mnt/hgfs/share1/gradu_design_bak/ gradu_design/ *[反向]*
 
 #### 系统实现流程
 
-1. 区块链A要加入系统，首先得获取域名。数据流：此区块链的某客户端通过网络端口向中继模块提交申请，中继模块转发给监管模块
-   
-   **C ST O  OU CN**
-   
-   **每个网络模块写一个函数，访问127.0.0.1：4400的时候就返回自己的基本信息！用于验证**
-   
-   - 先只填写信息用于给出去，签名验证这些基本功能弄完了再做https://www.bilibili.com/video/BV1xE411N7SP/
-   
-   1. 监管程序生成自签名证书**（创建一个index_domain文件存储申请者域名和生成的证书的对应关系）**
-      1. mkdir demoCA ./demoCA/certs ./demoCA/crl ./demoCA/newcerts ./demoCA/private ./demoCA/csr
-      2. touch ./demoCA/index.txt; echo "01" > ./demoCA/serial
-      3. openssl genrsa -out ./demoCA/private/cakey.pem   # 创建CA的私钥
-      4. openssl req -new -key ./demoCA/private/cakey.pem -out ./demoCA/csr//ca.csr -config openssl.cnf -batch   # 创建CA待自签署的证书请求文件
-      5. openssl ca -selfsign -in ./demoCA/csr/ca.csr -config openssl.cnf -batch   # 自签署
-      6. cp ./demoCA/newcerts/01.pem ./demoCA/cacert.pem   # 将自签署的证书按照配置文件的配置复制到指定位置
-   
-   2. 中继模块向监管模块申请证书
-      1. openssl genrsa -out privkey.pem
-      2. openssl req -new -out relayer.csr -config openssl.cnf -batch
-   
-   3. 区块链A发送域名和身份信息给中继模块
-   
-      **申请者证书:OU存域名,CN存eth.json的哈希**
-   
-      1. 例如通过一个apply程序获得区块链A的必要配置信息eth.json作为身份，和自定义的string类型的域名发送给中继模块
-   
-   4. 中继模块向监管模块申请域名
-   
-   5. 中继模块将申请的域名和区块链A绑定（domain & eth.json）
-   
-2. 
+- [x] ###### **区块链A要加入系统，首先申请域名完成注册（基本完成）**
+
+  **subject-C ST O  OU CN**
+
+  **监管模块和中继模块证书：OU存自定义名称，CN存ip:port**
+
+  **申请者证书：OU存域名,CN存config.json的哈希**
+
+  1. 监管模块生成自签名证书
+     1. mkdir demoCA ./demoCA/certs ./demoCA/crl ./demoCA/newcerts ./demoCA/private ./demoCA/csr
+     2. touch ./demoCA/index.txt; echo "01" > ./demoCA/serial
+     3. openssl genrsa -out ./demoCA/private/cakey.pem   # 创建CA的私钥
+     4. openssl req -new -key ./demoCA/private/cakey.pem -out ./demoCA/csr//ca.csr -config openssl.cnf -batch   # 创建CA待自签署的证书请求文件
+     5. openssl ca -selfsign -in ./demoCA/csr/ca.csr -config openssl.cnf -batch   # 自签署
+     6. cp ./demoCA/newcerts/01.pem ./demoCA/cacert.pem   # 将自签署的证书按照配置文件的配置复制到指定位置
+  2. 中继模块向监管模块申请证书
+     1. openssl genrsa -out privkey.pem
+     2. openssl req -new -out relayer.csr -config openssl.cnf -batch
+     3. ...（略）
+  3. 区块链A的某客户端client-A发送域名和身份信息给中继模块
+  4. 中继模块向监管模块申请域名，绑定域名证书和区块链A，将证书发回给区块链A，完成注册
+
+- [ ] ###### **为区块链A启动跨链服务（思考中&正在做）**
+
+  **编写过程记得多看看<a href="#anchor">模块功能</a>，参考[antchain链上插件](https://github.com/AntChainOpenLabs/AntChainBridgePluginSDK/wiki/2.-AntChain-Bridge%E8%B7%A8%E9%93%BE%EF%BC%9A%E5%BC%82%E6%9E%84%E9%93%BE%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91%E6%89%8B%E5%86%8C)，免得忘记要实现功能**
+
+  1. client-A向中继模块发出启动跨链服务的请求，中继模块要完成：
+     1. 创建【桥接模块】，封装最基本的两个接口：监听事件、发送交易
+     2. 在区块链A上部署合约作为【跨链合约模块】，这就必须要用到一个A的账户a，a要连接到A发送交易部署合约
+        1. 中继模块有config.json，能获取A的端口和一个账户的私钥**（就用client-A?）**
+        2. 不同类型的区块链部署方式和代码内容不一样，所以**eth和cc要分开编写模块**，以eth为例：
+           1. ETHonChain.py模块：能调用其中函数 & 利用config.json，在新进程中创建一个client-A的客户端发送交易，完成跨链合约模块的部署，部署完成新进程结束
+           2. ETHoffChain.py模块：能调用其中函数 & 利用config.sjon，在新进程中连接上A（无账户的客户端），监听事件、发送交易，进程一直运行，除非：1）A申请暂停跨链服务，2）监管模块向中继模块发送指令，撤销A的跨链服务
+     3. 将部署好的合约地址返回给client-A，用于部署应用合约时能调用C的接口
+  
+- [ ] ###### 编写公证人模块，完成跨链数据流的完整传输，编写demo测试
+
+  1. 公证人模块验证跨链消息时，**需要向一个可信的连接区块链A的程序发出查询请求，谁来担任这个角色？还是client-A吗？**
+
+- [ ] 参考[系统设计](# 系统初步设计（帮助理解的简略图）)，完善系统功能
+
+  1. 监管模块的指令下达功能等
+
+
+
+
+
+
+
+#### 系统设计疑问
+
+- [ ] 关于注册时的验证
+  1. 对于一些小东西的验证需要需要做到哪一步,比如中继模块是否验证申请者发的申请消息？
+  2. 每个网络模块写一个函数，访问ip:port/basic_info的时候就返回自己的基本信息用于验证？
+  3. 思考很久，打算先完成最主要的功能性，之后看能不能再做https://www.bilibili.com/video/BV1xE411N7SP/
+- [ ] 
